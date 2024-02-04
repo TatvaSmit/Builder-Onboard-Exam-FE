@@ -1,5 +1,13 @@
-import { Box, FormControl, InputLabel, MenuItem, MenuList, Select, styled } from "@mui/material";
-// import "./MuiSelect.css";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  MenuList,
+  Select,
+  styled,
+} from "@mui/material";
+
 interface Props {
   value?: string;
   mb?: string;
@@ -7,7 +15,14 @@ interface Props {
   onChange?: () => void;
   menuList: Array<any>;
   fullWidth?: boolean;
+  label?: string;
 }
+
+const StyledInputLabel = styled(InputLabel)<any>`
+  &.MuiFormLabel-root.MuiInputLabel-root.Mui-focused{
+    color: #6c00ea !important;
+  },
+`;
 
 const StyledSelect = styled(Select)<any>`
   &.MuiInputBase-root.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
@@ -20,7 +35,6 @@ const StyledSelect = styled(Select)<any>`
     width:${(props: any) => props.width || "auto"};
     margin-bottom: ${(props: any) => props.mb || 0}
   },
-
   & .Mui-focused {
     color: #6c00ea;
     font-family: Rubik, sans-serif
@@ -28,20 +42,20 @@ const StyledSelect = styled(Select)<any>`
 `;
 
 const MuiSelect = (props: Props) => {
-  const { value, onChange, fullWidth, mb, width, menuList } = props;
+  const { value, onChange, fullWidth, mb, width, menuList, label } = props;
   return (
     <>
       <FormControl fullWidth={fullWidth} className="select-form-control">
-        <InputLabel id="label">Age</InputLabel>
+        {label && <StyledInputLabel id="label">{label}</StyledInputLabel>}
         <StyledSelect
           mb={mb}
           width={width}
-          label="Age"
+          label={label}
           variant="outlined"
           sx={{ width: "500px" }}
           className="select"
           labelId="label"
-          id="demo-simple-select"
+          id="select"
           value={value}
           placeholder="Select Technology"
           onChange={onChange}

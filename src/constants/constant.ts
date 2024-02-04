@@ -1,3 +1,6 @@
 const Options = ["A", "B", "C", "D", "E", "F"];
-
-export {Options}
+enum Role {
+  Admin = "admin",
+  Developer = "developer",
+}
+export { Options, Role };

@@ -1,4 +1,9 @@
-import { FormControl, InputBaseComponentProps, TextField, styled } from "@mui/material";
+import {
+  FormControl,
+  InputBaseComponentProps,
+  TextField,
+  styled,
+} from "@mui/material";
 import "./MuiInput.css";
 
 interface Props {
@@ -17,12 +22,16 @@ interface Props {
   startAdornment?: React.ReactNode;
   endAdornment?: React.ReactNode;
   inputProps?: InputBaseComponentProps | undefined;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
 }
 
 const StyledInput = styled(TextField)<any>`
-  .MuiInputBase-root.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
-  .MuiInputBase-root.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  .MuiInputBase-root.MuiOutlinedInput-root:hover
+    .MuiOutlinedInput-notchedOutline,
+  .MuiInputBase-root.MuiOutlinedInput-root.Mui-focused
+    .MuiOutlinedInput-notchedOutline {
     border: 1px solid #6c00ea;
   }
 
@@ -33,7 +42,7 @@ const StyledInput = styled(TextField)<any>`
   }
 `;
 
-const Input = (props: Props) => {
+const MuiInput = (props: Props) => {
   const {
     value,
     width,
@@ -73,7 +82,10 @@ const Input = (props: Props) => {
           onChange={onChange}
           helperText={helperText}
           error={error}
-          InputProps={{ startAdornment: startAdornment, endAdornment: endAdornment }}
+          InputProps={{
+            startAdornment: startAdornment,
+            endAdornment: endAdornment,
+          }}
           inputProps={inputProps}
         />
       </FormControl>
@@ -81,4 +93,4 @@ const Input = (props: Props) => {
   );
 };
 
-export default Input;
+export default MuiInput;

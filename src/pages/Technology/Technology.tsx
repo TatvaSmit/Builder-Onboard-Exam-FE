@@ -4,7 +4,7 @@ import Layout from "../../layout/layout";
 import MuiButton from "../../components/Button/MuiButton";
 import { Edit } from "@mui/icons-material";
 import { useState } from "react";
-import UpdateTechnology from "../../modals/UpdateTechnology";
+import Modal from "../../modals/Modal";
 
 const technology = [
   { name: "Node", id: 1, duration: 30, no_of_questions: 30 },
@@ -12,27 +12,44 @@ const technology = [
   { name: "React Native", id: 3, duration: 30, no_of_questions: 30 },
 ];
 
-const technologyTableHeaders = ["Technology", "Duration", "Questions", "Action"];
+const technologyTableHeaders = [
+  "Technology",
+  "Duration",
+  "Questions",
+  "Action",
+];
 
 const Technology = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const handleClickOpen = () => {
     setOpenEditModal(true);
   };
-
   const handleClose = () => {
     setOpenEditModal(false);
   };
   return (
     <>
       <Layout pageTitle="Technology">
-        <Box sx={{ display: "flex", width: "100%", justifyContent: "center", padding: "24px 0" }}>
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "center",
+            padding: "24px 0",
+          }}
+        >
           <Box sx={webStyles.technologyPageWrapper}>
-            <Typography sx={{ fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}>
+            <Typography
+              sx={{ fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}
+            >
               Add Technology
             </Typography>
             <Box mb={3}>
-              <Input name={"technology"} width="400px" placeholder="Enter technology name" />
+              <Input
+                name={"technology"}
+                width="400px"
+                placeholder="Enter technology name"
+              />
               <MuiButton
                 margin={"0 0 0 20px"}
                 borderRadius="4px"
@@ -65,7 +82,10 @@ const Technology = () => {
                     <Grid xs={true}>{t.duration}min</Grid>
                     <Grid xs={true}>{t.no_of_questions}</Grid>
                     <Grid xs={2}>
-                      <IconButton sx={{ color: "#6c00ea" }} onClick={handleClickOpen}>
+                      <IconButton
+                        sx={{ color: "#6c00ea" }}
+                        onClick={handleClickOpen}
+                      >
                         <Edit />
                       </IconButton>
                     </Grid>
@@ -75,7 +95,12 @@ const Technology = () => {
             </Grid>
           </Box>
         </Box>
-        <UpdateTechnology title="update" open={openEditModal} handleClose={handleClose} />
+        <Modal
+          type="updateTechnology"
+          title="update"
+          open={openEditModal}
+          handleClose={handleClose}
+        />
       </Layout>
     </>
   );

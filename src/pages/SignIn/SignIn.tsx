@@ -1,7 +1,20 @@
 import { Suspense, lazy, useState } from "react";
-import { Box, Button, Grid, Theme, Tooltip, makeStyles, styled } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Theme,
+  Tooltip,
+  makeStyles,
+  styled,
+} from "@mui/material";
 import { ErrorBoundary, useErrorBoundary } from "react-error-boundary";
 import { login } from "../../services/userServices";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import _ from "lodash";
+import { Role } from "../../constants/constant";
 const Input = lazy(() => import("../../components/Input/MuiInput"));
 const Layout = lazy(() => import("../../layout/layout"));
 const MuiButton = lazy(() => import("../../components/Button/MuiButton"));
@@ -11,7 +24,15 @@ const Errors = () => {
 };
 const SignIn = () => {
   const [count, setCount] = useState(0);
+  const navigate = useNavigate();
   const [signupData, setSignUpdata] = useState({ email: "", password: "" });
+  const user = useSelector((state: RootState) => state.user);
+  if (_.get(user, "id", null)) {
+    const role = _.get(user, "role", Role.Developer);
+    _.isEqual(role, Role.Developer)
+      ? navigate("/start-test")
+      : navigate("/technology");
+  }
   // const { resetBoundary, showBoundary } = useErrorBoundary();
   const handleSignIn = async () => {
     const res = await login(signupData).catch((error) => {
@@ -20,7 +41,9 @@ const SignIn = () => {
     console.log(res);
   };
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleOnChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target as HTMLInputElement;
     setSignUpdata((prevState) => {
       return { ...prevState, [name]: value };
