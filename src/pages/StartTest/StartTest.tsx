@@ -5,20 +5,40 @@ import MuiSelect from "../../components/Select/MuiSelect";
 import MuiButton from "../../components/Button/MuiButton";
 import { useState } from "react";
 import Modal from "../../modals/Modal";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { closeModal, openModal } from "../../redux/slices/modalSlice";
 
 interface Props {}
 
 const StartTest = (props: Props) => {
-  const [openExamModal, setOpenExamModal] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleCloseModal = () => {
-    setOpenExamModal(false);
+    dispatch(closeModal({ open: false }));
   };
+
+  const handleAttempTest = () => {
+    dispatch(closeModal({ open: false }));
+    navigate("/test-session");
+  };
+
   const handleOpenExamDetailsModal = () => {
-    setOpenExamModal(true);
+    dispatch(
+      openModal({
+        type: "examDetails",
+        title: "Success",
+        open: true,
+        onCancel: handleCloseModal,
+        onSubmit: handleAttempTest,
+      })
+    );
   };
   return (
     <>
-      <Layout pageTitle="Start exam" isDeveloper={true}>
+      <Layout pageTitle="Exam" isDeveloper={true}>
         <Box
           sx={{
             display: "flex",
@@ -26,34 +46,35 @@ const StartTest = (props: Props) => {
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
+            height: "calc(100vh - 64px)",
           }}
         >
           <Typography
-            sx={{ fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}
+            sx={{
+              fontWeight: 500,
+              fontSize: "32px",
+              marginBottom: "20px",
+              fontFamily: "Rubik, sans-serif",
+            }}
           >
-            Start Exam
+            Test
           </Typography>
           <MuiSelect
             label="Technology"
             menuList={["Node", "React"]}
             width="500px"
+            fontFamily="Rubik, sans-serif"
           />
           <MuiButton
-            margin="20px 0 0 0"
-            width="100px"
+            margin="40px 0 0 0"
+            width="160px"
             fontColor="white"
             borderRadius="4px"
             onClick={handleOpenExamDetailsModal}
           >
-            Start Exam
+            Start Test
           </MuiButton>
         </Box>
-        <Modal
-          title={"Exam Details"}
-          type="examDetails"
-          open={openExamModal}
-          handleClose={handleCloseModal}
-        />
       </Layout>
     </>
   );

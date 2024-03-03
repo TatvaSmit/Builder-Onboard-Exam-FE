@@ -102,7 +102,14 @@ const Questions = () => {
             padding: "24px 0",
           }}
         >
-          <Typography sx={{ fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}>
+          <Typography
+            sx={{
+              fontWeight: 500,
+              fontSize: "32px",
+              marginBottom: "20px",
+              fontFamily: "Rubik,sans-serif",
+            }}
+          >
             Question list
           </Typography>
           <MuiSelect mb={"20px"} width="400px" menuList={[""]} />
@@ -174,7 +181,11 @@ const Questions = () => {
               />
             );
           })}
-          <MuiPagination count={10} page={page} handleChange={handlePagination} />
+          <MuiPagination
+            count={10}
+            page={page}
+            handleChange={handlePagination}
+          />
         </Box>
       </Layout>
     </>

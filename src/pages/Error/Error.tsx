@@ -1,12 +1,15 @@
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Layout from "../../layout/layout";
+import { notFound } from "../../assets";
 
 const Error = () => {
   return (
     <Layout pageTitle="Page not found">
-      <Typography sx={{ fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}>
-        Oops no page found!
-      </Typography>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      >
+        <img style={{ width: "700px" }} src={notFound} alt="" />
+      </Box>
     </Layout>
   );
 };

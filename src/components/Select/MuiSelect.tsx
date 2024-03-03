@@ -16,41 +16,59 @@ interface Props {
   menuList: Array<any>;
   fullWidth?: boolean;
   label?: string;
+  fontFamily?: string;
 }
 
 const StyledInputLabel = styled(InputLabel)<any>`
-  &.MuiFormLabel-root.MuiInputLabel-root.Mui-focused{
+  &.MuiFormLabel-root.MuiInputLabel-root.Mui-focused {
     color: #6c00ea !important;
-  },
+  }
+  ,
+  &.MuiFormLabel-root.MuiInputLabel-root {
+    font-family: ${(props: any) => props.fontFamily || "auto"};
+  }
 `;
 
 const StyledSelect = styled(Select)<any>`
-  &.MuiInputBase-root.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #6c00ea
-  },
-  &.MuiInputBase-root.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border: 1px solid #6c00ea
-  },
+  &.MuiInputBase-root.MuiOutlinedInput-root:hover
+    .MuiOutlinedInput-notchedOutline {
+    border-color: #6c00ea;
+  }
+  ,
+  &.MuiInputBase-root.MuiOutlinedInput-root.Mui-focused
+    .MuiOutlinedInput-notchedOutline {
+    border: 1px solid #6c00ea;
+  }
+  ,
   &.MuiInputBase-root.MuiOutlinedInput-root {
-    width:${(props: any) => props.width || "auto"};
-    margin-bottom: ${(props: any) => props.mb || 0}
-  },
-  & .Mui-focused {
+    width: ${(props: any) => props.width || "auto"};
+    margin-bottom: ${(props: any) => props.mb || 0};
+    font-family: ${(props: any) => props.fontFamily || "Rubik, sans-serif"};
+  }
+  ,
+  &.Mui-focused {
     color: #6c00ea;
-    font-family: Rubik, sans-serif
-  },
+    font-family: ${(props: any) => props.fontFamily || "Rubik, sans-serif"};
+  }
+  ,
 `;
 
 const MuiSelect = (props: Props) => {
-  const { value, onChange, fullWidth, mb, width, menuList, label } = props;
+  const { value, onChange, fullWidth, mb, width, menuList, label, fontFamily } =
+    props;
   return (
     <>
       <FormControl fullWidth={fullWidth} className="select-form-control">
-        {label && <StyledInputLabel id="label">{label}</StyledInputLabel>}
+        {label && (
+          <StyledInputLabel fontFamily={fontFamily} id="label">
+            {label}
+          </StyledInputLabel>
+        )}
         <StyledSelect
           mb={mb}
           width={width}
           label={label}
+          fontFamily={fontFamily}
           variant="outlined"
           sx={{ width: "500px" }}
           className="select"

@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
+  IconButton,
   Radio,
   RadioGroup,
   Typography,
@@ -16,6 +17,10 @@ import React, { useEffect, useState } from "react";
 import _ from "lodash";
 import { Options } from "../../constants/constant";
 import Option from "../../components/Option/Option";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { closeModal, openModal } from "../../redux/slices/modalSlice";
 
 const TestDetails = {
   name: "Test",
@@ -42,7 +47,11 @@ const TestDetails = {
       question_id: 3,
       question: "What is the largest mammal?",
       point: "1",
-      options: [{ name: "Blue Whale" }, { name: "Elephant" }, { name: "Giraffe" }],
+      options: [
+        { name: "Blue Whale" },
+        { name: "Elephant" },
+        { name: "Giraffe" },
+      ],
     },
     {
       question_id: 4,
@@ -60,7 +69,11 @@ const TestDetails = {
       question_id: 5,
       question: "Who is known as the 'Father of Computer Science'?",
       point: "4",
-      options: [{ name: "Alan Turing" }, { name: "Bill Gates" }, { name: "Steve Jobs" }],
+      options: [
+        { name: "Alan Turing" },
+        { name: "Bill Gates" },
+        { name: "Steve Jobs" },
+      ],
     },
     {
       question_id: 6,
@@ -86,6 +99,9 @@ const TestSession = () => {
   const [minutes, setMinutes] = useState(Number(TestDetails.duration));
   const [seconds, setSeconds] = useState(0);
   const [hours, setHours] = useState(0);
+  const [openAlertModal, setOpenAlertModal] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const totalQuestions = TestDetails.questions.length;
   const answerArray = Array(totalQuestions)
     .fill(0)
@@ -93,7 +109,7 @@ const TestSession = () => {
       return { [idx + 1]: null };
     });
 
-  const [value, setValue] = React.useState<any>(answerArray);
+  const [value, setValue] = useState<any>(answerArray);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const index = Number(event.target.name);
     const v = (event.target as HTMLInputElement).value;
@@ -145,27 +161,68 @@ const TestSession = () => {
     );
   };
 
+  const handleOpenAlertModal = () => {
+    dispatch(
+      openModal({
+        open:true,
+        type: "alert",
+        title: "Alert!",
+        onSubmit: handleAlertModalSubmit,
+        onCancel: handleAlertModalClose,
+      })
+    );
+  };
+
+  const handleAlertModalClose = () => {
+    dispatch(closeModal({ type: "alert" }));
+  };
+
+  const handleAlertModalSubmit = () => {
+    dispatch(closeModal({ type: "alert" }));
+    navigate("/start-test");
+  };
+
   return (
     <>
-      <Box sx={{ minHeight: "100vh" }}>
+      <Box sx={{ minHeight: "calc(100vh - 50px)" }}>
         <Box
-          sx={{ backgroundColor: "#e3e3e3", height: "50px", display: "flex", alignItems: "center" }}
+          sx={{
+            backgroundColor: "#e3e3e3",
+            height: "50px",
+            display: "flex",
+            alignItems: "center",
+          }}
         >
+          <IconButton onClick={handleOpenAlertModal}>
+            <CancelIcon />
+          </IconButton>
           <Typography
-            sx={{ fontFamily: "Rubik, sans-serif", marginLeft: "auto", paddingRight: "20px" }}
+            sx={{
+              fontFamily: "Rubik, sans-serif",
+              marginLeft: "auto",
+              paddingRight: "20px",
+            }}
           >
             Sessiontime remaining: {_.padStart(`${hours}`, 2, "0")}:
-            {_.padStart(`${minutes}`, 2, "0")}:{_.padStart(`${seconds}`, 2, "0")}
+            {_.padStart(`${minutes}`, 2, "0")}:
+            {_.padStart(`${seconds}`, 2, "0")}
           </Typography>
         </Box>
         <Box sx={{ display: "flex" }}>
-          <Box width={"270px"} sx={{ padding: "10px", borderRight: "1px solid #6c00ea" }}>
+          <Box
+            width={"270px"}
+            sx={{ padding: "10px", borderRight: "1px solid #6c00ea" }}
+          >
             <Grid container gap={1}>
               {TestDetails.questions.map((e, idx: number) => {
                 const isSelected = value[idx][idx + 1] === null ? false : true;
                 const isCurrentPage = page === idx + 1;
-                const isOtherPageSelectedOrNot = isSelected ? "#00D659" : "#f4eaff";
-                const backgroundColor = isCurrentPage ? "#6c00ea" : isOtherPageSelectedOrNot;
+                const isOtherPageSelectedOrNot = isSelected
+                  ? "#00D659"
+                  : "#f4eaff";
+                const backgroundColor = isCurrentPage
+                  ? "#6c00ea"
+                  : isOtherPageSelectedOrNot;
                 return (
                   <Grid item>
                     <MuiButton
@@ -191,9 +248,12 @@ const TestSession = () => {
               }}
             >
               <h1>{TestDetails.name}</h1>
-              <Typography>React JS</Typography>
-              <Typography>
-                {totalQuestions - selectedQuestions.length} of {totalQuestions} remaining
+              <Typography style={{ fontFamily: "Rubik, sans-serif" }}>
+                React JS
+              </Typography>
+              <Typography style={{ fontFamily: "Rubik, sans-serif" }}>
+                {totalQuestions - selectedQuestions.length} of {totalQuestions}{" "}
+                remaining
               </Typography>
             </Box>
             {TestDetails.questions.slice(page - 1, page).map((q) => {
@@ -222,7 +282,8 @@ const TestSession = () => {
                     >
                       <Grid container spacing={2}>
                         {q.options.map((op, idx: number) => {
-                          const isSelected = value[page - 1][page] !== op.name ? false : true;
+                          const isSelected =
+                            value[page - 1][page] !== op.name ? false : true;
                           return (
                             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                               <FormControlLabel
@@ -236,7 +297,8 @@ const TestSession = () => {
                                   width: "100%",
                                   marginLeft: "0",
                                   fontFamily: "Rubik, sans-serif",
-                                  boxShadow: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
+                                  boxShadow:
+                                    "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
                                 }}
                                 value={op.name}
                                 control={<MuiRadioButton />}

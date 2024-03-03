@@ -43,7 +43,12 @@ const Layout = (props: Props) => {
       {pageTitle && (
         <AppBar sx={{ backgroundColor: "#6c00ea" }}>
           <Toolbar>
-            <Typography sx={{ fontSize: "32px" }}> {pageTitle}</Typography>
+            <Typography
+              sx={{ fontSize: "32px", fontFamily: "Rubik, sans-serif" }}
+            >
+              {" "}
+              {pageTitle}
+            </Typography>
             <Box
               sx={{
                 display: "flex",

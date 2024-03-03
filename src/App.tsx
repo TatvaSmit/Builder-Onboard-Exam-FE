@@ -11,8 +11,12 @@ import TestSession from "./pages/Test/TestSession";
 import PrivateRoute from "./routes/PrivateRoute";
 import StartTest from "./pages/StartTest/StartTest";
 import { Role } from "./constants/constant";
+import Modal from "./modals/Modal";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux/store";
 
 function App() {
+  const modal = useSelector((state: RootState) => state.modal);
   return (
     <>
       <Routes>
@@ -59,6 +63,14 @@ function App() {
         />
         <Route path="*" element={<Error />} />
       </Routes>
+      <Modal
+        title={modal.title}
+        type={modal.type}
+        open={modal.open}
+        dialogContent={modal.dialogContent}
+        handleClose={modal.onCancel}
+        handleSubmit={modal.onSubmit}
+      />
     </>
   );
 }

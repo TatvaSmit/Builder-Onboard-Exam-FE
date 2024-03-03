@@ -7,25 +7,48 @@ import { AddCircle, Delete } from "@mui/icons-material";
 import MuiButton from "../../components/Button/MuiButton";
 import Layout from "../../layout/layout";
 import Option from "../../components/Option/Option";
+import Modal from "../../modals/Modal";
 
 const AddQuestion = () => {
   const [optionsArr, setOptionArr] = useState([{ name: "" }]);
   const [correctOption, setCorrectOption] = useState<null | number>(null);
+  const [openModal, setOpenModal] = useState(false);
   return (
     <>
       <Layout pageTitle="Add Questions">
         <Box
-          sx={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0" }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "24px 0",
+          }}
         >
-          <Typography sx={{ fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}>
+          <Typography
+            sx={{
+              fontWeight: 500,
+              fontSize: "32px",
+              marginBottom: "20px",
+              fontFamily: "Rubik,sans-serif",
+            }}
+          >
             Add Question
           </Typography>
-          <MuiSelect width="500px" mb={"20px"} menuList={['']} />
+          <MuiSelect width="500px" mb={"20px"} menuList={[""]} />
           <Box mb={2}>
-            <Input width="500px" label="Question" placeholder="Enter the question" />
+            <Input
+              width="500px"
+              label="Question"
+              placeholder="Enter the question"
+            />
           </Box>
           <Box mb={2}>
-            <Input width="500px" label="Points" type="number" placeholder="Enter question points" />
+            <Input
+              width="500px"
+              label="Points"
+              type="number"
+              placeholder="Enter question points"
+            />
           </Box>
           <h2>Add Options</h2>
           <Box sx={{ maxWidth: "fit-content" }}>
@@ -35,7 +58,9 @@ const AddQuestion = () => {
                   <Input
                     width="500px"
                     placeholder="Enter Option"
-                    startAdornment={<Option index={index} width="56px" height="56px" />}
+                    startAdornment={
+                      <Option index={index} width="56px" height="56px" />
+                    }
                     endAdornment={
                       <MuiRadioButton
                       // onClick={() => setCorrectOption(index)}
@@ -68,10 +93,21 @@ const AddQuestion = () => {
               </IconButton>
             </Box>
           </Box>
-          <MuiButton variant="contained" borderRadius="4px" fontColor="white">
+          <MuiButton
+            onClick={() => setOpenModal(true)}
+            variant="contained"
+            borderRadius="4px"
+            fontColor="white"
+          >
             Add Question
           </MuiButton>
         </Box>
+        <Modal
+          title="Suceess"
+          open={openModal}
+          handleClose={() => setOpenModal(false)}
+          type={"success"}
+        />
       </Layout>
     </>
   );
