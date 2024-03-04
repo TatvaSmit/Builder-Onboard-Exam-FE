@@ -8,6 +8,7 @@ import _ from "lodash";
 import { Role } from "../../constants/constant";
 import { useDispatch } from "react-redux";
 import { setLoggedInUserData } from "../../redux/slices/userSlice";
+
 const Input = lazy(() => import("../../components/Input/MuiInput"));
 const Layout = lazy(() => import("../../layout/layout"));
 const MuiButton = lazy(() => import("../../components/Button/MuiButton"));
@@ -17,7 +18,6 @@ export const Errors = () => {
 };
 
 const SignIn = () => {
-  const [count, setCount] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [signupData, setSignUpdata] = useState({ email: "", password: "" });

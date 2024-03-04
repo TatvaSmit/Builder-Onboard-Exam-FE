@@ -75,10 +75,10 @@ const Questions = () => {
         >
           <Typography
             sx={{
-              fontFamily: "Rubik,sans-serif",
-              fontWeight: 800,
+              fontWeight: 500,
               fontSize: "32px",
               marginBottom: "20px",
+              fontFamily: "Rubik,sans-serif",
             }}
           >
             Question list
@@ -86,6 +86,7 @@ const Questions = () => {
           <MuiSelect
             mb={"20px"}
             width="400px"
+            fontFamily="Rubik,sans-serif"
             onChange={handleChangeTechnology}
             label="Technology"
             menuList={technologyList}

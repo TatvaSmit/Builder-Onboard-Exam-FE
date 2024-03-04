@@ -13,6 +13,8 @@ interface Props {
   width?: string;
   height?: string;
   onClick?: () => void;
+  border?: string;
+  minWidth?: string;
   disabled?: boolean;
 }
 
@@ -23,11 +25,12 @@ const StyledButton = styled(Button)<any>`
     border-radius: ${(props: Props) => props.borderRadius || "initial"};
     font-weight: ${(props: Props) => props.fontWeight || "unset"};
     font-size: ${(props: Props) => props.fontSize || "unset"};
-    margin: ${(props: Props) => props.margin || "unset"};
+    margin: ${(props: Props) => props.margin || "0"};
     color: ${(props: Props) => props.fontColor || "black"};
     height: ${(props: Props) => props.height || "auto"};
     width: ${(props: Props) => props.width || "auto"};
-    min-width: auto;
+    border: ${(props: Props) => props.border || "none"};
+    min-width: ${(props: Props) => props.minWidth || "50px"};
     font-family: Rubik, sans-serif;
   }
   &.MuiButtonBase-root.MuiButton-root.Mui-disabled {
@@ -51,6 +54,7 @@ const MuiButton = (props: Props) => {
     width,
     onClick,
     disabled,
+    border,
   } = props;
   return (
     <StyledButton
@@ -60,6 +64,7 @@ const MuiButton = (props: Props) => {
       textTransform={textTransform}
       variant={variant}
       fontSize={fontSize}
+      border={border}
       fontWeight={fontWeight}
       margin={margin}
       height={height}

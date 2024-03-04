@@ -3,8 +3,8 @@ import "./MuiInput.css";
 
 interface Props {
   label?: string;
-  helperText?: string;
-  error?: boolean;
+  helperText?: string|null;
+  error?: boolean|null;
   value?: any;
   name?: string;
   disabled?: boolean;
@@ -31,6 +31,9 @@ const StyledInput = styled(TextField)<any>`
     border-radius: 4px;
     padding-left: 0;
     font-family: Rubik, sans-serif;
+  }
+  & .MuiFormHelperText-root{
+    margin-left:0
   }
 `;
 

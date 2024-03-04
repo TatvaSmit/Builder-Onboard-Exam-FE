@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllTechnologies } from "../../services/technologyServices";
 import { IQuestionData, TechnologyList } from "../../constants/Interface";
 
-
+import Modal from "../../modals/Modal";
 
 const AddQuestion = () => {
   const [optionsArr, setOptionArr] = useState([{ name: "" }]);
@@ -95,14 +95,19 @@ const AddQuestion = () => {
     <>
       <Layout pageTitle="Add Question">
         <Box
-          sx={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0" }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "24px 0",
+          }}
         >
           <Typography
             sx={{
-              fontFamily: "Rubik,sans-serif",
-              fontWeight: 800,
+              fontWeight: 500,
               fontSize: "32px",
               marginBottom: "20px",
+              fontFamily: "Rubik,sans-serif",
             }}
           >
             Add Question
@@ -110,6 +115,7 @@ const AddQuestion = () => {
           <MuiSelect
             width="500px"
             mb={"20px"}
+            fontFamily="Rubik,sans-serif"
             name="technology_id"
             value={questionData.technology_id}
             onChange={handleOnChange}
@@ -151,7 +157,9 @@ const AddQuestion = () => {
                     value={questionData.options[index].name}
                     onChange={(e) => handleOptionChange(e, index)}
                     placeholder="Enter Option"
-                    startAdornment={<Option index={index} width="56px" height="56px" />}
+                    startAdornment={
+                      <Option index={index} width="56px" height="56px" />
+                    }
                     endAdornment={
                       <MuiRadioButton
                         onChange={() => handleCorrectAnswer(index)}
