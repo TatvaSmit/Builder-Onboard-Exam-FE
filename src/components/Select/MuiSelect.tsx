@@ -1,26 +1,23 @@
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  MenuList,
-  Select,
-  styled,
-} from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, MenuList, Select, styled } from "@mui/material";
 
 interface Props {
-  value?: string;
+  value?: string | number | null;
   mb?: string;
   width?: string;
-  onChange?: () => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   menuList: Array<any>;
   fullWidth?: boolean;
   label?: string;
+  name?: string;
 }
 
 const StyledInputLabel = styled(InputLabel)<any>`
+  &.MuiFormLabel-root.MuiInputLabel-root{
+    font-family: Rubik,sans-serif
+  }
   &.MuiFormLabel-root.MuiInputLabel-root.Mui-focused{
     color: #6c00ea !important;
+    font-family: Rubik,sans-serif
   },
 `;
 
@@ -42,7 +39,7 @@ const StyledSelect = styled(Select)<any>`
 `;
 
 const MuiSelect = (props: Props) => {
-  const { value, onChange, fullWidth, mb, width, menuList, label } = props;
+  const { value, onChange, fullWidth, mb, width, menuList, label, name } = props;
   return (
     <>
       <FormControl fullWidth={fullWidth} className="select-form-control">
@@ -51,6 +48,7 @@ const MuiSelect = (props: Props) => {
           mb={mb}
           width={width}
           label={label}
+          name={name}
           variant="outlined"
           sx={{ width: "500px" }}
           className="select"
@@ -61,7 +59,7 @@ const MuiSelect = (props: Props) => {
           onChange={onChange}
         >
           {menuList.map((menuItem) => {
-            return <MenuItem value={10}>{menuItem}</MenuItem>;
+            return <MenuItem value={menuItem.id}>{menuItem.name}</MenuItem>;
           })}
         </StyledSelect>
       </FormControl>

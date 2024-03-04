@@ -1,7 +1,6 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import { BrowserRouter, Route, RouterProvider, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import SignIn from "./pages/SignIn/SignIn";
 import Error from "./pages/Error/Error";
 import Technology from "./pages/Technology/Technology";
@@ -10,7 +9,6 @@ import Questions from "./pages/AddQuestions/Questions";
 import TestSession from "./pages/Test/TestSession";
 import PrivateRoute from "./routes/PrivateRoute";
 import StartTest from "./pages/StartTest/StartTest";
-import { Role } from "./constants/constant";
 
 function App() {
   return (
@@ -34,7 +32,15 @@ function App() {
           }
         />
         <Route
-          path="/add-questions"
+          path="/add-question"
+          element={
+            <PrivateRoute>
+              <AddQuestion />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/update-question/:question_id"
           element={
             <PrivateRoute>
               <AddQuestion />

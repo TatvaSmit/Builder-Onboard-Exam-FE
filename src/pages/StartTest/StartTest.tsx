@@ -29,7 +29,7 @@ const StartTest = (props: Props) => {
           }}
         >
           <Typography
-            sx={{ fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}
+            sx={{fontFamily: "Rubik,sans-serif", fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}
           >
             Start Exam
           </Typography>
@@ -40,7 +40,7 @@ const StartTest = (props: Props) => {
           />
           <MuiButton
             margin="20px 0 0 0"
-            width="100px"
+            width="150px"
             fontColor="white"
             borderRadius="4px"
             onClick={handleOpenExamDetailsModal}

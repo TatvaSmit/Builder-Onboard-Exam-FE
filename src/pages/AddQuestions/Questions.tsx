@@ -9,80 +9,29 @@ import {
   Typography,
   makeStyles,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MuiSelect from "../../components/Select/MuiSelect";
 import MuiAccordion from "../../components/MuiAccordion/MuiAccordion";
 import { Options } from "../../constants/constant";
 import MuiButton from "../../components/Button/MuiButton";
 import Layout from "../../layout/layout";
 import MuiPagination from "../../components/Pagination/MuiPagination";
+import { getAllQuestions } from "../../services/questionServices";
+import { getAllTechnologies } from "../../services/technologyServices";
+import { TechnologyList } from "../../constants/Interface";
 
-export const questions = [
-  {
-    question: "test",
-    options: [
-      {
-        name: "A",
-      },
-      {
-        name: "B",
-      },
-      {
-        name: "C",
-      },
-      {
-        name: "D",
-      },
-    ],
-    correct_answer: "A",
-    points: 2,
-    technology_id: 1,
-  },
-  {
-    question: "test",
-    options: [
-      {
-        name: "A",
-      },
-      {
-        name: "B",
-      },
-      {
-        name: "C",
-      },
-      {
-        name: "D",
-      },
-    ],
-    correct_answer: "A",
-    points: 2,
-    technology_id: 1,
-  },
-  {
-    question: "test",
-    options: [
-      {
-        name: "A",
-      },
-      {
-        name: "B",
-      },
-      {
-        name: "C",
-      },
-      {
-        name: "D",
-      },
-    ],
-    correct_answer: "A",
-    points: 2,
-    technology_id: 1,
-  },
-];
+interface Question {
+  id: string;
+  options: { name: string }[];
+  question: string;
+  technology_id: string;
+  answer: string;
+}
 
 const Questions = () => {
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [expanded, setExpanded] = useState<string | false>(false);
-
+  const [technologyList, setTechnologyList] = useState<TechnologyList[]>([]);
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -91,6 +40,28 @@ const Questions = () => {
   const handlePagination = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
+
+  const getListQuestions = async () => {
+    const res = await getAllQuestions().catch((error) => console.log(error));
+    if (res) {
+      setQuestions(res.data);
+    }
+  };
+  const getAllTechnology = async () => {
+    const res = await getAllTechnologies().catch((error) => console.log(error));
+    if (res) {
+      setTechnologyList(res.data);
+    }
+  };
+
+  const handleChangeTechnology = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { value } = e.target as HTMLInputElement;
+  };
+
+  useEffect(() => {
+    getListQuestions();
+    getAllTechnology();
+  }, []);
   return (
     <>
       <Layout pageTitle="Questions">
@@ -102,10 +73,23 @@ const Questions = () => {
             padding: "24px 0",
           }}
         >
-          <Typography sx={{ fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}>
+          <Typography
+            sx={{
+              fontFamily: "Rubik,sans-serif",
+              fontWeight: 800,
+              fontSize: "32px",
+              marginBottom: "20px",
+            }}
+          >
             Question list
           </Typography>
-          <MuiSelect mb={"20px"} width="400px" menuList={[""]} />
+          <MuiSelect
+            mb={"20px"}
+            width="400px"
+            onChange={handleChangeTechnology}
+            label="Technology"
+            menuList={technologyList}
+          />
           {questions.map((q, index: number) => {
             const details = (
               <Grid container rowSpacing={2} spacing={2}>
@@ -117,9 +101,7 @@ const Questions = () => {
                           width: "100%",
                           height: "auto",
                           border: `${
-                            op.name == q.correct_answer
-                              ? "0.2px solid #6c00ea"
-                              : "0.2px solid #e3e3e3"
+                            op.name == q.answer ? "0.2px solid #6c00ea" : "0.2px solid #e3e3e3"
                           } `,
                           borderRadius: "8px",
                           boxShadow: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",

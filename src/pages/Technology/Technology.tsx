@@ -3,30 +3,54 @@ import Input from "../../components/Input/MuiInput";
 import Layout from "../../layout/layout";
 import MuiButton from "../../components/Button/MuiButton";
 import { Edit } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../modals/Modal";
+import { createTechnology, getAllTechnologies } from "../../services/technologyServices";
+import _ from "lodash";
 
-const technology = [
-  { name: "Node", id: 1, duration: 30, no_of_questions: 30 },
-  { name: "ROR", id: 2, duration: 30, no_of_questions: 30 },
-  { name: "React Native", id: 3, duration: 30, no_of_questions: 30 },
-];
+interface Technology {
+  name: string;
+  id: number;
+  duration: number;
+  no_of_questions: number;
+}
 
-const technologyTableHeaders = [
-  "Technology",
-  "Duration",
-  "Questions",
-  "Action",
-];
+const technologyTableHeaders = ["Technology", "Duration", "Questions", "Action"];
 
 const Technology = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [technologies, setTechnologies] = useState<Technology[]>([]);
   const handleClickOpen = () => {
     setOpenEditModal(true);
   };
   const handleClose = () => {
     setOpenEditModal(false);
   };
+
+  const [technology, setTechnology] = useState("");
+  const handleTechChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { value } = e.target as HTMLInputElement;
+    setTechnology(value);
+  };
+
+  const handleAddTechnology = async () => {
+    if (technology) {
+      const res = await createTechnology({ name: technology }).catch((error) => console.log(error));
+      if (res) {
+        getAllTech();
+      }
+    }
+  };
+
+  const getAllTech = async () => {
+    const res = await getAllTechnologies().catch((error) => console.log(error));
+    setTechnologies(_.get(res, "data", []));
+  };
+
+  useEffect(() => {
+    getAllTech();
+  }, []);
+
   return (
     <>
       <Layout pageTitle="Technology">
@@ -40,12 +64,19 @@ const Technology = () => {
         >
           <Box sx={webStyles.technologyPageWrapper}>
             <Typography
-              sx={{ fontWeight: 800, fontSize: "32px", marginBottom: "20px" }}
+              sx={{
+                fontFamily: "Rubik,sans-serif",
+                fontWeight: 800,
+                fontSize: "32px",
+                marginBottom: "20px",
+              }}
             >
               Add Technology
             </Typography>
             <Box mb={3}>
               <Input
+                onChange={handleTechChange}
+                value={technology}
                 name={"technology"}
                 width="400px"
                 placeholder="Enter technology name"
@@ -56,6 +87,7 @@ const Technology = () => {
                 height={"55px"}
                 width="65px"
                 fontColor="white"
+                onClick={handleAddTechnology}
               >
                 Add
               </MuiButton>
@@ -75,17 +107,14 @@ const Technology = () => {
               })}
             </Grid>
             <Grid container rowGap={2}>
-              {technology.map((t, idx: number) => {
+              {technologies.map((t: Technology, idx: number) => {
                 return (
                   <Grid xs={12} sx={{ ...webStyles.technologyName }}>
                     <Grid xs={true}>{t.name}</Grid>
                     <Grid xs={true}>{t.duration}min</Grid>
                     <Grid xs={true}>{t.no_of_questions}</Grid>
                     <Grid xs={2}>
-                      <IconButton
-                        sx={{ color: "#6c00ea" }}
-                        onClick={handleClickOpen}
-                      >
+                      <IconButton sx={{ color: "#6c00ea" }} onClick={handleClickOpen}>
                         <Edit />
                       </IconButton>
                     </Grid>

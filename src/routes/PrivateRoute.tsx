@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { Navigate, RouteProps, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { RootState } from "../redux/store";
 import _ from "lodash";
 import { FC, ReactNode } from "react";

@@ -3,4 +3,5 @@ enum Role {
   Admin = "admin",
   Developer = "developer",
 }
+
 export { Options, Role };
