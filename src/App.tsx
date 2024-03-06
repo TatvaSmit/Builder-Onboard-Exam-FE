@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import SignIn from "./pages/SignIn/SignIn";
 import Error from "./pages/Error/Error";
 import Technology from "./pages/Technology/Technology";

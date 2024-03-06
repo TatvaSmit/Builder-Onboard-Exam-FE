@@ -47,8 +47,8 @@ const StyledSelect = styled(Select)<any>`
 `;
 
 const MuiSelect = (props: Props) => {
-  const { value, onChange, fullWidth, mb, width, menuList, label, fontFamily,name } =
-    props;
+  const { value, onChange, fullWidth, mb, width, menuList, label, fontFamily, name } = props;
+  console.log(props);
   return (
     <>
       <FormControl fullWidth={fullWidth} className="select-form-control">
@@ -75,6 +75,7 @@ const MuiSelect = (props: Props) => {
           {menuList.map((menuItem) => {
             return <MenuItem value={menuItem.id}>{menuItem.name}</MenuItem>;
           })}
+          {!menuList.length && <MenuItem disabled>No items</MenuItem>}
         </StyledSelect>
       </FormControl>
     </>

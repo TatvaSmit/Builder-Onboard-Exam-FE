@@ -5,31 +5,36 @@ import MuiButton from "../../components/Button/MuiButton";
 import { Edit } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import Modal from "../../modals/Modal";
-import { createTechnology, getAllTechnologies } from "../../services/technologyServices";
+import {
+  createTechnology,
+  getAllTechnologies,
+  updateTechnology,
+} from "../../services/technologyServices";
 import _ from "lodash";
 import { useDispatch } from "react-redux";
 import { closeModal, openModal } from "../../redux/slices/modalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { resetForm, setErrors, techFormOnChange } from "../../redux/slices/updateTechSlice";
-
-interface Technology {
-  name: string;
-  id: number;
-  duration: number;
-  no_of_questions: number;
-}
+import { resetForm } from "../../redux/slices/updateTechSlice";
+import apiCall from "../../config/apiCall";
+import { setData } from "../../redux/slices/commonSlice";
+import { ITechnology } from "../../constants/Interface";
 
 const technologyTableHeaders = ["Technology", "Duration", "Questions", "Action"];
 
 const DialogContent = () => {
-  const techModal = useSelector((state: RootState) => state.techModal);
+  const common = useSelector((state: RootState) => state.common);
   const dispatch = useDispatch();
   const handleDialogInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    dispatch(techFormOnChange({ name, value }));
+    dispatch(
+      setData({
+        name: "techUpdateFormData",
+        value: { ...common.techUpdateFormData, [name]: value },
+      })
+    );
   };
   return (
     <Grid container rowGap={3}>
@@ -39,7 +44,7 @@ const DialogContent = () => {
           placeholder="Technology"
           fullWidth
           width="100%"
-          value={techModal.techUpdateFormData.technology}
+          value={common.techUpdateFormData.technology}
           name="technology"
           disabled
         />
@@ -48,11 +53,11 @@ const DialogContent = () => {
         <Input
           label="Duration"
           type="number"
-          value={techModal.techUpdateFormData.duration}
+          value={common.techUpdateFormData.duration}
           name="duration"
           placeholder="Duration"
-          helperText={techModal.techUpdateFormData.errors.duration}
-          error={Boolean(techModal.techUpdateFormData.errors.duration)}
+          // helperText={common.techUpdateFormData.errors.duration}
+          // error={Boolean(common.techUpdateFormData.duration)}
           fullWidth
           width="100%"
           onChange={handleDialogInputChange}
@@ -63,9 +68,9 @@ const DialogContent = () => {
           label="No. of questions"
           type="number"
           name="noOfQuestions"
-          error={Boolean(techModal.techUpdateFormData.errors.noOfQuestions)}
-          helperText={techModal.techUpdateFormData.errors.noOfQuestions}
-          value={techModal.techUpdateFormData.noOfQuestions}
+          // error={Boolean(common.techUpdateFormData.errors.noOfQuestions)}
+          // helperText={common.techUpdateFormData.errors.noOfQuestions}
+          value={common.techUpdateFormData.noOfQuestions}
           placeholder="No of question"
           fullWidth
           width="100%"
@@ -78,14 +83,24 @@ const DialogContent = () => {
 
 const Technology = () => {
   const [technologies, setTechnologies] = useState([]);
+  const common = useSelector((state: RootState) => state.common);
   const dispatch = useDispatch();
-  const techModal = useSelector((state: RootState) => state.techModal);
-  console.log(techModal);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (tech: ITechnology) => {
+    console.log(tech);
+    dispatch(
+      setData({
+        name: "techUpdateFormData",
+        value: {
+          id: tech.id,
+          technology: tech.name,
+          duration: tech.duration,
+          noOfQuestions: tech.no_of_questions,
+        },
+      })
+    );
     dispatch(
       openModal({
-        open: true,
         type: "updateTechnology",
         onCancel: handleClose,
         onSubmit: handleUpdateTech,
@@ -94,15 +109,25 @@ const Technology = () => {
     );
   };
 
-  const handleUpdateTech = () => {
-    const { duration, technology, noOfQuestions } = techModal.techUpdateFormData;
-    if (!duration || !technology || !noOfQuestions) {
-      dispatch(setErrors());
+  const handleUpdateTech = async (props: any) => {
+    // const { duration, technology, noOfQuestions, id } = common.techUpdateFormData;
+    // if (!duration || !technology || !noOfQuestions) {
+    //   dispatch(setErrors());
+    // }
+    const { response, error } = await apiCall(() =>
+      updateTechnology(props.techUpdateFormData.id, {
+        duration: props.techUpdateFormData.duration,
+        no_of_questions: props.techUpdateFormData.noOfQuestions,
+      })
+    );
+    if (response) {
+      const { response, error } = await apiCall(getAllTech);
     }
+    dispatch(closeModal());
   };
 
   const handleClose = () => {
-    dispatch(closeModal({}));
+    dispatch(closeModal());
     dispatch(resetForm());
   };
 
@@ -116,14 +141,15 @@ const Technology = () => {
     if (technology) {
       const res = await createTechnology({ name: technology }).catch((error) => console.log(error));
       if (res) {
+        setTechnology("");
         getAllTech();
       }
     }
   };
 
   const getAllTech = async () => {
-    const res = await getAllTechnologies().catch((error) => console.log(error));
-    setTechnologies(_.get(res, "data", []));
+    const { response, error } = await apiCall(getAllTechnologies);
+    setTechnologies(_.get(response, "data", []));
   };
 
   useEffect(() => {
@@ -149,7 +175,6 @@ const Technology = () => {
                 marginBottom: "20px",
                 fontFamily: "Rubik,sans-serif",
               }}
-              // onClick={addTechnology}
             >
               Add Technology
             </Typography>
@@ -192,7 +217,7 @@ const Technology = () => {
               })}
             </Grid>
             <Grid container rowGap={2}>
-              {technologies.map((t: Technology, idx: number) => {
+              {technologies.map((t: ITechnology, idx: number) => {
                 return (
                   <Grid xs={12} sx={{ ...webStyles.technologyName }}>
                     <Grid style={{ textAlign: "center" }} xs={true}>
@@ -205,7 +230,7 @@ const Technology = () => {
                       {t.no_of_questions}
                     </Grid>
                     <Grid style={{ textAlign: "center" }} xs={true}>
-                      <IconButton sx={{ color: "#6c00ea" }} onClick={handleClickOpen}>
+                      <IconButton sx={{ color: "#6c00ea" }} onClick={() => handleClickOpen(t)}>
                         <Edit />
                       </IconButton>
                     </Grid>

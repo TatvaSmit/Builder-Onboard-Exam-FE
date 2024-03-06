@@ -46,12 +46,8 @@ const updateTechSlice = createSlice({
         ...state.techUpdateFormData,
         errors: {
           ...state.techUpdateFormData.errors,
-          technology: state.techUpdateFormData.technology
-            ? null
-            : "technology required!",
-          duration: state.techUpdateFormData.duration
-            ? null
-            : "duration required!",
+          technology: state.techUpdateFormData.technology ? null : "technology required!",
+          duration: state.techUpdateFormData.duration ? null : "duration required!",
           noOfQuestions: state.techUpdateFormData.noOfQuestions
             ? null
             : "no of questions required!",
@@ -69,7 +65,7 @@ const updateTechSlice = createSlice({
           noOfQuestions: null,
         },
       };
-    },
+    }
   },
 });
 export const { techFormOnChange, setErrors, resetForm } =

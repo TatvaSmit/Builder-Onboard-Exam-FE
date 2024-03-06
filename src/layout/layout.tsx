@@ -1,13 +1,26 @@
-import { AppBar, Box, Toolbar, Typography, switchClasses } from "@mui/material";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+  switchClasses,
+} from "@mui/material";
 import _ from "lodash";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { Role } from "../constants/constant";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getLoggedInUser } from "../services/userServices";
 import { setLoggedInUserData } from "../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
+import apiCall from "../config/apiCall";
+import { openModal } from "../redux/slices/modalSlice";
+import { IPath } from "../constants/Interface";
 
 interface Props {
   pageTitle?: string;
@@ -16,23 +29,7 @@ interface Props {
   isPublic?: boolean;
 }
 
-interface Path {
-  to: string;
-  displayName: string;
-}
-
-interface User {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-let paths: Path[] = [
+let pathsInfo: IPath[] = [
   { to: "/technology", displayName: "Technology" },
   { to: "/questions", displayName: "Question bank" },
   { to: "/add-question", displayName: "Add Question" },
@@ -45,29 +42,60 @@ const Layout = (props: Props) => {
   const dispatch = useDispatch();
   const userRole = _.get(user, "role", null);
   const userId = _.get(user, "id", null);
+  const userName = _.get(user, "name", null);
+  const userEmail = _.get(user, "email", null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [paths, setPaths] = useState(pathsInfo);
+  const open = Boolean(anchorEl);
 
-  const getUserData = async (): Promise<User | null> => {
-    const user = await getLoggedInUser().catch((error) => console.log(error));
-    const userData = _.get(user, "data", null);
+  const handleOpenProfileMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseProfileMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const clearDataAndLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/sign-in");
+  };
+
+  const handleLogout = () => {
+    setAnchorEl(null);
+    clearDataAndLogout();
+  };
+
+  const getUserData = async () => {
+    const { response, error } = await apiCall(getLoggedInUser);
+    const code = _.get(error, "code", "500");
+    if (_.isEqual(code, 401)) {
+      if (!isPublic) {
+        const statusText = _.get(error, "statusText", "Error");
+        const description = _.get(error, "data.message", "unknown error");
+        dispatch(openModal({ type: "error", description: description, title: statusText }));
+      }
+      clearDataAndLogout();
+    }
+    const userData = _.get(response, "data", null);
     dispatch(setLoggedInUserData(userData));
     return userData;
   };
 
-  const redirectAccordingly = (userRole: string | null) => {
+  const redirectAccordingly = (userRole: string | null, userId: number | null) => {
     switch (true) {
       case _.isEqual(userRole, Role.Admin) && (isPublic || isDeveloper):
-        console.log("q");
         navigate("/technology");
         break;
       case _.isEqual(userRole, Role.Developer) && (!isDeveloper || isPublic):
         navigate("/start-test");
         break;
       case !(userId && _.includes(Object.values(Role), userRole)):
-        paths = [];
+        setPaths([]);
         navigate("/sign-in");
         break;
       case _.isEqual(userRole, Role.Developer):
-        paths = [{ to: "/start-test", displayName: "Start Test" }];
+        setPaths([{ to: "/start-test", displayName: "Start Test" }]);
         break;
       default:
       //
@@ -75,14 +103,20 @@ const Layout = (props: Props) => {
   };
 
   useEffect(() => {
-    if (!userId) {
-      getUserData().then((user: User | null) => {
+    const token = localStorage.getItem("token");
+    if (!userId && token) {
+      getUserData().then((user) => {
         if (user) {
-          redirectAccordingly(_.get(user, "role", null));
+          redirectAccordingly(_.get(user, "role", null), _.get(user, "id", null));
         }
       });
+    } else if (token) {
+      redirectAccordingly(userRole, userId);
+    } else {
+      redirectAccordingly(null, null);
     }
   }, []);
+
   return (
     <Box sx={{ minHeight: pageTitle ? "calc(100vh - 64px)" : "100vh" }}>
       {pageTitle && (
@@ -98,6 +132,26 @@ const Layout = (props: Props) => {
                 );
               })}
             </Box>
+            {!isPublic && (
+              <>
+                <IconButton sx={{ marginLeft: "auto" }} onClick={handleOpenProfileMenu}>
+                  <Avatar>{userName?.charAt(0)}</Avatar>
+                </IconButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleCloseProfileMenu}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <MenuItem disabled>{userEmail}</MenuItem>
+                  <MenuItem disabled>{userRole}</MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
+              </>
+            )}
           </Toolbar>
         </AppBar>
       )}

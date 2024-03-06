@@ -4,7 +4,6 @@ interface IQuestionData {
   technology_id: number | null;
   options: { name: string }[];
   answer: string | null;
-  optionIndex: number | null;
 }
 
 interface TechnologyList {
@@ -12,4 +11,27 @@ interface TechnologyList {
   name: string;
 }
 
-export { IQuestionData, TechnologyList };
+interface ITechnology {
+  name: string;
+  id: number;
+  duration: number;
+  no_of_questions: number;
+}
+
+interface IPath {
+  to: string;
+  displayName: string;
+}
+
+interface IUser {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export { IQuestionData, TechnologyList, ITechnology, IUser, IPath };

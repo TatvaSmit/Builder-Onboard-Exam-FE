@@ -19,6 +19,8 @@ import MuiPagination from "../../components/Pagination/MuiPagination";
 import { getAllQuestions } from "../../services/questionServices";
 import { getAllTechnologies } from "../../services/technologyServices";
 import { TechnologyList } from "../../constants/Interface";
+import { useNavigate } from "react-router-dom";
+import _ from "lodash";
 
 interface Question {
   id: string;
@@ -31,7 +33,9 @@ interface Question {
 const Questions = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [expanded, setExpanded] = useState<string | false>(false);
+  const [technology, setTechnology] = useState(0);
   const [technologyList, setTechnologyList] = useState<TechnologyList[]>([]);
+  const navigate = useNavigate();
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -41,8 +45,8 @@ const Questions = () => {
     setPage(value);
   };
 
-  const getListQuestions = async () => {
-    const res = await getAllQuestions().catch((error) => console.log(error));
+  const getListQuestions = async (technologyId?: number) => {
+    const res = await getAllQuestions(technologyId).catch((error) => console.log(error));
     if (res) {
       setQuestions(res.data);
     }
@@ -56,12 +60,22 @@ const Questions = () => {
 
   const handleChangeTechnology = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = e.target as HTMLInputElement;
+    setTechnology(Number(value));
+    setPage(1);
+  };
+
+  const handleUpdateQuestion = (id: number) => {
+    navigate(`/update-question/${id}`);
   };
 
   useEffect(() => {
     getListQuestions();
     getAllTechnology();
   }, []);
+
+  useEffect(() => {
+    getListQuestions(Number(technology));
+  }, [technology]);
   return (
     <>
       <Layout pageTitle="Questions">
@@ -91,7 +105,7 @@ const Questions = () => {
             label="Technology"
             menuList={technologyList}
           />
-          {questions.map((q, index: number) => {
+          {questions.slice(page - 1, page).map((q, index: number) => {
             const details = (
               <Grid container rowSpacing={2} spacing={2}>
                 {q.options.map((op, index: number) => {
@@ -142,7 +156,10 @@ const Questions = () => {
                 }}
               >
                 {index + 1}. {q.question}
-                <IconButton sx={{ marginLeft: "auto" }}>
+                <IconButton
+                  sx={{ marginLeft: "auto" }}
+                  onClick={() => handleUpdateQuestion(Number(q.id))}
+                >
                   <Edit />
                 </IconButton>
               </Box>
@@ -157,7 +174,11 @@ const Questions = () => {
               />
             );
           })}
-          <MuiPagination count={10} page={page} handleChange={handlePagination} />
+          <MuiPagination
+            count={_.get(questions, "length", 1)}
+            page={page}
+            handleChange={handlePagination}
+          />
         </Box>
       </Layout>
     </>

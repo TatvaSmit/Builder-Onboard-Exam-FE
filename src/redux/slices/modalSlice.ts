@@ -23,7 +23,7 @@ const modalSlice = createSlice({
       state.onCancel = onCancel;
       state.onSubmit = onSubmit;
     },
-    closeModal: (state, action) => {
+    closeModal: (state) => {
       state.open = false;
     },
   },

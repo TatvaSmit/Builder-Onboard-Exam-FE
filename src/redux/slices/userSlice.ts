@@ -1,19 +1,31 @@
 import { createSlice } from "@reduxjs/toolkit";
+import _ from "lodash";
 
 interface InitialState {
-  id: number;
-  role: string;
+  id: number | null;
+  role: string | null;
+  name: string | null;
+  email: string | null;
 }
 
 const userSlice = createSlice({
   name: "user",
-  initialState: { id: 1, role: "admin" } as InitialState | null,
+  initialState: {
+    id: null,
+    role: "",
+    name: "",
+    email: "",
+  } as InitialState,
   reducers: {
     setLoggedInUserData: (state, action) => {
-      return (state = action.payload);
+      state.id = _.get(action, "payload.id", null);
+      state.role = _.get(action, "payload.role", null);
+      state.name = `${_.get(action, "payload.first_name", null)}
+      ${_.get(action, "payload.last_name", null)}`;
+      state.email = _.get(action, "payload.email", null);
     },
     clearUserData: (state) => {
-      state = null;
+      state = { id: null, role: "", name: "", email: "" };
     },
   },
 });
