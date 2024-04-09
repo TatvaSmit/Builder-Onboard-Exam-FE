@@ -108,7 +108,7 @@ const Questions = () => {
           {questions.slice(page - 1, page).map((q, index: number) => {
             const details = (
               <Grid container rowSpacing={2} spacing={2}>
-                {q.options.map((op, index: number) => {
+                {_.map((_.get(q, "options", [])), (op, index: number) => {
                   return (
                     <Grid sx={{ display: "flex" }} item xs={12} md={6} lg={3}>
                       <Box

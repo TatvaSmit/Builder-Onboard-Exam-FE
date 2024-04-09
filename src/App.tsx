@@ -71,9 +71,11 @@ function App() {
         <Route path="*" element={<Error />} />
       </Routes>
       <Modal
+        noImage={modal.noImage}
         title={modal.title}
         type={modal.type}
         open={modal.open}
+        description={modal.description}
         dialogContent={modal.dialogContent}
         handleClose={modal.onCancel}
         handleSubmit={modal.onSubmit}

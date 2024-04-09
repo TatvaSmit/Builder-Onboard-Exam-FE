@@ -5,18 +5,27 @@ const modalSlice = createSlice({
   initialState: {
     open: false,
     description: null,
+    noImage: false,
     type: "",
-    title: "",
+    title: null,
     dialogContent: null,
     onSubmit: () => {},
     onCancel: () => {},
   },
   reducers: {
     openModal: (state, action) => {
-      const { type, title, description, onCancel, onSubmit, dialogContent } =
-        action.payload;
+      const {
+        type,
+        title,
+        description,
+        onCancel,
+        onSubmit,
+        dialogContent,
+        noImage = false,
+      } = action.payload;
       state.open = true;
       state.type = type;
+      state.noImage = noImage;
       state.description = description;
       state.title = title;
       state.dialogContent = dialogContent;

@@ -151,19 +151,47 @@ const TestSession = () => {
       technology_id: _.get(commonData, "examInfo.id", null),
     };
     const { response, error } = await apiCall(() => submitExam(id, payload));
-    const updatedCount = _.get(response, "data", []);
+    if (!_.isEmpty(error)) {
+      dispatch(
+        openModal({
+          open: true,
+          type: "error",
+          noImage: true,
+          description: _.get(error, "data.message", "error"),
+          onSubmit: handleAlertModalSubmit,
+          onCancel: handleAlertModalClose,
+        })
+      );
+    } else {
+      dispatch(
+        openModal({
+          open: true,
+          type: "success",
+          description: "Yay!, you have submitted the exam successfully",
+          onSubmit: handleAlertModalSubmit,
+          onCancel: handleAlertModalClose,
+        })
+      );
+    }
   };
 
   useEffect(() => {
     let totalSeconds = minutes * 60;
     const intervalId = setInterval(() => {
-      if (totalQuestions > 0) {
+      if (totalQuestions > 0 && totalSeconds) {
         setHours(Math.floor(totalSeconds / 3600));
         setMinutes(Math.floor(totalSeconds / 60));
         setSeconds(totalSeconds % 60);
         totalSeconds--;
       } else {
-        navigate("/start-test");
+        dispatch(
+          openModal({
+            open: true,
+            type: "alert",
+            description: "Exam time is up, your test has been submittted automatically",
+            onCancel: handleAlertModalSubmit,
+          })
+        );
       }
     }, 1000);
     return () => clearInterval(intervalId);

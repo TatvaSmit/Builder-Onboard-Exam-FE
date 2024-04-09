@@ -120,13 +120,18 @@ const Layout = (props: Props) => {
   return (
     <Box sx={{ minHeight: pageTitle ? "calc(100vh - 64px)" : "100vh" }}>
       {pageTitle && (
-        <AppBar sx={{ backgroundColor: "#6c00ea" }}>
+        <AppBar sx={{ border: "1px solid #6c00ea", background: "transparent", boxShadow: "none" }}>
           <Toolbar>
             <Typography sx={webStyles.pageTitle}> {pageTitle}</Typography>
             <Box sx={webStyles.navLinks}>
               {_.map(paths, (path) => {
+                const pathName = window.location.pathname;
+                const isActive = _.isEqual(pathName, _.get(path, "to", "/"));
                 return (
-                  <Link to={path.to} style={webStyles.linkStyle}>
+                  <Link
+                    to={path.to}
+                    style={isActive ? webStyles.activeLinkStyle : webStyles.linkStyle}
+                  >
                     {path.displayName}
                   </Link>
                 );
@@ -135,7 +140,7 @@ const Layout = (props: Props) => {
             {!isPublic && (
               <>
                 <IconButton sx={{ marginLeft: "auto" }} onClick={handleOpenProfileMenu}>
-                  <Avatar>{userName?.charAt(0)}</Avatar>
+                  <Avatar sx={{ border: "1px solid #6c00ea" }}>{userName?.charAt(0)}</Avatar>
                 </IconButton>
                 <Menu
                   id="basic-menu"
@@ -165,7 +170,17 @@ export default Layout;
 const webStyles = {
   linkStyle: {
     textDecoration: "none",
-    color: "white",
+    color: "black",
+    margin: "0 auto",
+    lineHeight: "auto",
+    padding: "5px 10px",
+  },
+  activeLinkStyle: {
+    color: "#6c00ea",
+    textDecoration: "none",
+    backgroundColor: "#f4eaff",
+    borderRadius: "20px",
+    padding: "5px 10px",
   },
   navLinks: {
     display: "flex",
@@ -173,5 +188,5 @@ const webStyles = {
     width: "100%",
     maxWidth: "400px",
   },
-  pageTitle: { fontSize: "28px", marginRight: "40px" },
+  pageTitle: { fontSize: "28px", marginRight: "40px", color: "black" },
 };

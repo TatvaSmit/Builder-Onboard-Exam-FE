@@ -48,7 +48,6 @@ const StyledSelect = styled(Select)<any>`
 
 const MuiSelect = (props: Props) => {
   const { value, onChange, fullWidth, mb, width, menuList, label, fontFamily, name } = props;
-  console.log(props);
   return (
     <>
       <FormControl fullWidth={fullWidth} className="select-form-control">

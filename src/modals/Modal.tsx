@@ -19,8 +19,9 @@ import { RootState } from "../redux/store";
 interface Props {
   type: any;
   open: boolean;
-  description?: string;
-  title: string;
+  description?: string | null;
+  title?: string | null;
+  noImage?: boolean;
   dialogContent?: any;
   handleClose: () => void;
   handleSubmit?: (props?: any) => void;
@@ -157,7 +158,7 @@ const AlertModal = (props: Props) => {
           alignItems: "center",
         }}
       >
-        <Typography style={{ fontSize: "24px" }}>Question added successfully</Typography>
+        <Typography style={{ fontSize: "24px" }}>{description}</Typography>
 
         <DialogContentText
           sx={{
@@ -200,7 +201,14 @@ const AlertModal = (props: Props) => {
 
 const ErrorModal = (props: Props) => {
   const dispatch = useDispatch();
-  const { title, description, handleClose = () => dispatch(closeModal()), handleSubmit } = props;
+  const {
+    title,
+    description,
+    handleClose = () => dispatch(closeModal()),
+    handleSubmit,
+    noImage,
+  } = props;
+  console.log(noImage);
   return (
     <>
       <DialogTitle
@@ -231,7 +239,7 @@ const ErrorModal = (props: Props) => {
           }}
           id="alert-dialog-description"
         >
-          <img src={error} alt="success" style={{ width: "300px" }} />
+          {!noImage && <img src={error} alt="success" style={{ width: "300px" }} />}
         </DialogContentText>
         <DialogActions>
           <MuiButton width="140px" borderRadius="4px" fontColor="white" onClick={handleClose}>
@@ -265,6 +273,7 @@ const Modal = (props: Props) => {
   return (
     <>
       <Dialog
+        slotProps={{ backdrop: { style: { backdropFilter: "blur(2px)" } } }}
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"

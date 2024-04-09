@@ -93,19 +93,38 @@ const AddQuestion = () => {
     );
   };
 
-  const handleAddQuestion = async () => {
+  const isAllFieldsValid = () => {
+    const questionData = _.get(commonData, "questionData", {});
+    const isOptionsAreThere = questionData.options.length > 1;
+    const isTechnologySelected = _.get(questionData, "technology_id", null);
+    const isAnswerSelected = _.get(questionData, "answer", null);
+    const isPointsAreAdded = _.get(questionData, "points", null);
     dispatch(
       setData({
-        name: "questionData",
-        value: {
-          ...commonData.questionData,
-          technology_id: Number(_.get(commonData, "questionData.technology_id", null)),
-        },
+        name: "questionDataErrors",
+        value: { question: null, points: null, technology_id: null, options: [], answer: null },
       })
     );
-    const res = await createQuestion(commonData.questionData).catch((error) => console.log(error));
-    if (res) {
-      navigate("/questions");
+    return isPointsAreAdded && isAnswerSelected && isTechnologySelected && isOptionsAreThere;
+  };
+
+  const handleAddQuestion = async () => {
+    if (Boolean(isAllFieldsValid())) {
+      dispatch(
+        setData({
+          name: "questionData",
+          value: {
+            ...commonData.questionData,
+            technology_id: Number(_.get(commonData, "questionData.technology_id", null)),
+          },
+        })
+      );
+      const res = await createQuestion(commonData.questionData).catch((error) =>
+        console.log(error)
+      );
+      if (res) {
+        navigate("/questions");
+      }
     }
   };
 
@@ -133,7 +152,7 @@ const AddQuestion = () => {
       dispatch(
         setData({
           name: "questionData",
-          value: { question: null, points: null, technology_id: null, options: [] },
+          value: { question: null, points: null, technology_id: null, options: [], answer: null },
         })
       );
     }
@@ -142,7 +161,7 @@ const AddQuestion = () => {
       dispatch(setData({ name: "questionData", value: {} }));
     };
   }, []);
-
+  console.log(commonData);
   return (
     <>
       <Layout pageTitle="Add Question">
