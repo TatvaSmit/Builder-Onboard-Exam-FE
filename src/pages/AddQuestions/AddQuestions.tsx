@@ -1,4 +1,4 @@
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import MuiInput from "../../components/Input/MuiInput";
 import MuiSelect from "../../components/Select/MuiSelect";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import _ from "lodash";
 import { createQuestion, getFullQuestion, getQuestion } from "../../services/questionServices";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAllTechnologies } from "../../services/technologyServices";
-import { IQuestionData, TechnologyList } from "../../constants/Interface";
+import { TechnologyList } from "../../constants/Interface";
 import apiCall from "../../config/apiCall";
 import { useDispatch } from "react-redux";
 import { setData } from "../../redux/slices/commonSlice";
@@ -33,6 +33,10 @@ const AddQuestion = () => {
         value: {
           ...commonData.questionData,
           [name]: value,
+          errors: {
+            ...commonData.questionData.errors,
+            [name]: value ? "" : getErrorMsg(name),
+          },
         },
       })
     );
@@ -92,6 +96,22 @@ const AddQuestion = () => {
       })
     );
   };
+  const getErrorMsg = (key: string) => {
+    switch (key) {
+      case "question":
+        return "question is required";
+      case "points":
+        return "points are required";
+      case "technology_id":
+        return "technology is required";
+      case "options":
+        return "atleast 2 options should be added";
+      case "answer":
+        return "answer should be selected";
+      default:
+        return "invalid value";
+    }
+  };
 
   const isAllFieldsValid = () => {
     const questionData = _.get(commonData, "questionData", {});
@@ -101,8 +121,17 @@ const AddQuestion = () => {
     const isPointsAreAdded = _.get(questionData, "points", null);
     dispatch(
       setData({
-        name: "questionDataErrors",
-        value: { question: null, points: null, technology_id: null, options: [], answer: null },
+        name: "questionData",
+        value: {
+          ...commonData.questionData,
+          errors: {
+            question: isTechnologySelected ? "" : getErrorMsg("question"),
+            points: isPointsAreAdded ? "" : getErrorMsg("points"),
+            technology_id: isTechnologySelected ? "" : getErrorMsg("technology_id"),
+            options: isOptionsAreThere ? "" : getErrorMsg("options"),
+            answer: isAnswerSelected ? "" : getErrorMsg("answer"),
+          },
+        },
       })
     );
     return isPointsAreAdded && isAnswerSelected && isTechnologySelected && isOptionsAreThere;
@@ -152,7 +181,20 @@ const AddQuestion = () => {
       dispatch(
         setData({
           name: "questionData",
-          value: { question: null, points: null, technology_id: null, options: [], answer: null },
+          value: {
+            question: null,
+            points: null,
+            technology_id: null,
+            options: [],
+            answer: null,
+            errors: {
+              question: "",
+              points: "",
+              technology_id: "",
+              options: "",
+              answer: "",
+            },
+          },
         })
       );
     }
@@ -192,6 +234,8 @@ const AddQuestion = () => {
             onChange={handleOnChange}
             label="Technology"
             menuList={technologyList}
+            error={Boolean(_.get(commonData, "questionData.errors.technology_id", ""))}
+            errorMsg={_.get(commonData, "questionData.errors.technology_id", "")}
           />
           <Box mb={2}>
             <MuiInput
@@ -201,6 +245,8 @@ const AddQuestion = () => {
               onChange={handleOnChange}
               label="Question"
               placeholder="Enter the question"
+              helperText={_.get(commonData, "questionData.errors.question", "")}
+              error={Boolean(_.get(commonData, "questionData.errors.question", ""))}
             />
           </Box>
           <Box mb={2}>
@@ -212,6 +258,8 @@ const AddQuestion = () => {
               onChange={handleOnChange}
               type="number"
               placeholder="Enter question points"
+              helperText={_.get(commonData, "questionData.errors.points", "")}
+              error={Boolean(_.get(commonData, "questionData.errors.points", ""))}
             />
           </Box>
           <Typography
@@ -219,6 +267,7 @@ const AddQuestion = () => {
           >
             Add Options
           </Typography>
+          <Typography>{_.get(commonData, "questionData.errors.answer", "")}</Typography>
           <Box sx={{ maxWidth: "fit-content" }}>
             {_.get(commonData, "questionData.options", []).map((option: any, index: number) => {
               return (
@@ -257,33 +306,40 @@ const AddQuestion = () => {
               );
             })}
             <Box>
-              <IconButton
-                sx={{
-                  display: "flex",
-                  color: "white",
-                  minWidth: "auto",
-                  marginLeft: "auto",
-                  backgroundColor: "#6c00ea",
-                  textTransform: "capitalize",
-                  "&:hover": {
-                    backgroundColor: "#6c00ea",
-                  },
-                }}
-                disabled={_.get(commonData, "questionData.options", []).length === 6}
-                onClick={() =>
-                  dispatch(
-                    setData({
-                      name: "questionData",
-                      value: {
-                        ...commonData.questionData,
-                        options: [...commonData.questionData.options, { name: "" }],
-                      },
-                    })
-                  )
-                }
+              <Tooltip
+                title={getErrorMsg("options")}
+                open={Boolean(_.get(commonData, "questionData.errors.options", ""))}
+                arrow
+                placement="right"
               >
-                <AddCircle />
-              </IconButton>
+                <IconButton
+                  sx={{
+                    display: "flex",
+                    color: "white",
+                    minWidth: "auto",
+                    marginLeft: "auto",
+                    backgroundColor: "#6c00ea",
+                    textTransform: "capitalize",
+                    "&:hover": {
+                      backgroundColor: "#6c00ea",
+                    },
+                  }}
+                  disabled={_.get(commonData, "questionData.options", []).length === 6}
+                  onClick={() =>
+                    dispatch(
+                      setData({
+                        name: "questionData",
+                        value: {
+                          ...commonData.questionData,
+                          options: [...commonData.questionData.options, { name: "" }],
+                        },
+                      })
+                    )
+                  }
+                >
+                  <AddCircle />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Box>
           <MuiButton

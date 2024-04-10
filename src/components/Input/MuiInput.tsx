@@ -3,8 +3,8 @@ import "./MuiInput.css";
 
 interface Props {
   label?: string;
-  helperText?: string|null;
-  error?: boolean|null;
+  helperText?: string | null;
+  error?: boolean | null;
   value?: any;
   name?: string;
   disabled?: boolean;
@@ -28,12 +28,12 @@ const StyledInput = styled(TextField)<any>`
   }
 
   & .MuiInputBase-root.MuiOutlinedInput-root {
-    border-radius: 4px;
+    border-radius: 8px;
     padding-left: 0;
     font-family: Rubik, sans-serif;
   }
-  & .MuiFormHelperText-root{
-    margin-left:0
+  & .MuiFormHelperText-root {
+    margin-left: 0;
   }
 `;
 

@@ -1,4 +1,13 @@
-import { Box, FormControl, InputLabel, MenuItem, MenuList, Select, styled } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  MenuList,
+  Select,
+  styled,
+} from "@mui/material";
 
 interface Props {
   value?: string | number | null;
@@ -10,6 +19,8 @@ interface Props {
   label?: string;
   fontFamily?: string;
   name?: string;
+  error?: boolean;
+  errorMsg?: string;
 }
 
 const StyledInputLabel = styled(InputLabel)<any>`
@@ -37,6 +48,7 @@ const StyledSelect = styled(Select)<any>`
     width: ${(props: any) => props.width || "auto"};
     margin-bottom: ${(props: any) => props.mb || 0};
     font-family: ${(props: any) => props.fontFamily || "Rubik, sans-serif"};
+    border-radius:8px;
   }
   ,
   &.Mui-focused {
@@ -47,7 +59,19 @@ const StyledSelect = styled(Select)<any>`
 `;
 
 const MuiSelect = (props: Props) => {
-  const { value, onChange, fullWidth, mb, width, menuList, label, fontFamily, name } = props;
+  const {
+    value,
+    onChange,
+    fullWidth,
+    mb,
+    width,
+    menuList,
+    label,
+    fontFamily,
+    name,
+    error,
+    errorMsg,
+  } = props;
   return (
     <>
       <FormControl fullWidth={fullWidth} className="select-form-control">
@@ -70,12 +94,16 @@ const MuiSelect = (props: Props) => {
           value={value}
           placeholder="Select Technology"
           onChange={onChange}
+          error={error}
         >
           {menuList.map((menuItem) => {
             return <MenuItem value={menuItem.id}>{menuItem.name}</MenuItem>;
           })}
           {!menuList.length && <MenuItem disabled>No items</MenuItem>}
         </StyledSelect>
+        <FormHelperText style={{ color: "#d32f2f", margin: `-${mb} 0 ${mb} 0` }}>
+          {errorMsg}
+        </FormHelperText>
       </FormControl>
     </>
   );

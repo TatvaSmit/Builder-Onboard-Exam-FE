@@ -81,7 +81,7 @@ const TestSession = () => {
     const isQuestionAlreadyFilled = filledAnswerIdArray.filter((e) => {
       return Number(Object.keys(e)[0]) === questionId;
     });
-    console.log(isQuestionAlreadyFilled.length, filledAnswerIdArray, questionId);
+    
     if (Boolean(isQuestionAlreadyFilled?.length)) {
       const indexOfFilledAnswerId = filledAnswerIdArray.findIndex(
         (obj) => Object.keys(obj)[0] === questionId.toString()
