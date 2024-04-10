@@ -56,8 +56,8 @@ const DialogContent = () => {
           value={common.techUpdateFormData.duration}
           name="duration"
           placeholder="Duration"
-          // helperText={common.techUpdateFormData.errors.duration}
-          // error={Boolean(common.techUpdateFormData.duration)}
+          helperText={_.get(common, "techUpdateFormData.errors.duration", "")}
+          error={Boolean(_.get(common, "techUpdateFormData.errors.duration", ""))}
           fullWidth
           width="100%"
           onChange={handleDialogInputChange}
@@ -68,8 +68,8 @@ const DialogContent = () => {
           label="No. of questions"
           type="number"
           name="noOfQuestions"
-          // error={Boolean(common.techUpdateFormData.errors.noOfQuestions)}
-          // helperText={common.techUpdateFormData.errors.noOfQuestions}
+          error={Boolean(_.get(common, "techUpdateFormData.errors.noOfQuestions", ""))}
+          helperText={_.get(common, "techUpdateFormData.errors.noOfQuestions", "")}
           value={common.techUpdateFormData.noOfQuestions}
           placeholder="No of question"
           fullWidth
@@ -82,20 +82,23 @@ const DialogContent = () => {
 };
 
 const Technology = () => {
-  const [technologies, setTechnologies] = useState([]);
   const common = useSelector((state: RootState) => state.common);
+  const [technologies, setTechnologies] = useState([]);
   const dispatch = useDispatch();
 
   const handleClickOpen = (tech: ITechnology) => {
-    console.log(tech);
     dispatch(
       setData({
         name: "techUpdateFormData",
         value: {
           id: tech.id,
-          technology: tech.name,
-          duration: tech.duration,
-          noOfQuestions: tech.no_of_questions,
+          technology: _.get(tech, "name", ""),
+          duration: _.get(tech, "duration", ""),
+          noOfQuestions: _.get(tech, "no_of_questions", 0),
+          errors: {
+            duration: "",
+            noOfQuestions: "",
+          },
         },
       })
     );
@@ -110,10 +113,26 @@ const Technology = () => {
   };
 
   const handleUpdateTech = async (props: any) => {
-    // const { duration, technology, noOfQuestions, id } = common.techUpdateFormData;
-    // if (!duration || !technology || !noOfQuestions) {
-    //   dispatch(setErrors());
-    // }
+    console.log(common)
+    const duration = _.get(common, "techUpdateFormData.duration", "");
+    const noOfQuestions = _.get(common, "techUpdateFormData.noOfQuestions", "");
+    if (!duration || !noOfQuestions) {
+      dispatch(
+        setData({
+          name: "techUpdateFormData",
+          value: {
+            ...common.techUpdateFormData,
+            errors: {
+              // ..._.get(common, "techUpdateFormData.errors", {}),
+              duration: duration ? "" : "duration is required",
+              noOfQuestions: noOfQuestions ? "" : "number of questions is required",
+            },
+          },
+        })
+      );
+      return;
+    }
+
     const { response, error } = await apiCall(() =>
       updateTechnology(props.techUpdateFormData.id, {
         duration: props.techUpdateFormData.duration,
@@ -132,9 +151,11 @@ const Technology = () => {
   };
 
   const [technology, setTechnology] = useState("");
+  const [technologyError, setTechnologyError] = useState("");
   const handleTechChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = e.target as HTMLInputElement;
     setTechnology(value);
+    setTechnologyError("");
   };
 
   const handleAddTechnology = async () => {
@@ -142,8 +163,11 @@ const Technology = () => {
       const res = await createTechnology({ name: technology }).catch((error) => console.log(error));
       if (res) {
         setTechnology("");
+        setTechnologyError("");
         getAllTech();
       }
+    } else {
+      setTechnologyError("technology is required");
     }
   };
 
@@ -159,25 +183,9 @@ const Technology = () => {
   return (
     <>
       <Layout pageTitle="Technology">
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "center",
-            padding: "24px 0",
-          }}
-        >
+        <Box sx={webStyles.pageWrapper}>
           <Box sx={webStyles.technologyPageWrapper}>
-            <Typography
-              sx={{
-                fontWeight: 500,
-                fontSize: "32px",
-                marginBottom: "20px",
-                fontFamily: "Rubik,sans-serif",
-              }}
-            >
-              Add Technology
-            </Typography>
+            <Typography sx={webStyles.pageTitle}>Add Technology</Typography>
             <Box mb={3}>
               <Input
                 onChange={handleTechChange}
@@ -185,6 +193,8 @@ const Technology = () => {
                 name={"technology"}
                 width="400px"
                 placeholder="Enter technology name"
+                helperText={technologyError}
+                error={Boolean(technologyError)}
               />
               <MuiButton
                 margin={"0 0 0 20px"}
@@ -197,7 +207,6 @@ const Technology = () => {
                 Add
               </MuiButton>
             </Box>
-
             <Grid
               container
               sx={{
@@ -247,10 +256,22 @@ const Technology = () => {
 export default Technology;
 
 const webStyles = {
+  pageWrapper: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+    padding: "24px 0",
+  },
+  pageTitle: {
+    fontWeight: 500,
+    fontSize: "32px",
+    marginBottom: "20px",
+    fontFamily: "Rubik,sans-serif",
+  },
   technologyName: {
     // boxShadow: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
     border: "0.2px solid #e2e2e2",
-    borderRadius: "4px",
+    borderRadius: "8px",
     display: "flex",
     alignItems: "center",
     padding: "10px",

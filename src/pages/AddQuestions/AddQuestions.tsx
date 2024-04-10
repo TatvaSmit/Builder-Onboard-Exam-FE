@@ -172,6 +172,18 @@ const AddQuestion = () => {
     dispatch(setData({ name: "questionData", value: { ...response.data } }));
   };
 
+  const addOptions = () => {
+    dispatch(
+      setData({
+        name: "questionData",
+        value: {
+          ...commonData.questionData,
+          options: [...commonData.questionData.options, { name: "" }],
+        },
+      })
+    );
+  };
+
   useEffect(() => {
     getAllTechnology();
     const questionId = _.get(param, "question_id", null);
@@ -203,18 +215,11 @@ const AddQuestion = () => {
       dispatch(setData({ name: "questionData", value: {} }));
     };
   }, []);
-  console.log(commonData);
+
   return (
     <>
       <Layout pageTitle="Add Question">
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            padding: "24px 0",
-          }}
-        >
+        <Box sx={webStyles.pageWrapper}>
           <Typography
             sx={{
               fontWeight: 500,
@@ -313,29 +318,9 @@ const AddQuestion = () => {
                 placement="right"
               >
                 <IconButton
-                  sx={{
-                    display: "flex",
-                    color: "white",
-                    minWidth: "auto",
-                    marginLeft: "auto",
-                    backgroundColor: "#6c00ea",
-                    textTransform: "capitalize",
-                    "&:hover": {
-                      backgroundColor: "#6c00ea",
-                    },
-                  }}
+                  sx={webStyles.addOptionBtn}
                   disabled={_.get(commonData, "questionData.options", []).length === 6}
-                  onClick={() =>
-                    dispatch(
-                      setData({
-                        name: "questionData",
-                        value: {
-                          ...commonData.questionData,
-                          options: [...commonData.questionData.options, { name: "" }],
-                        },
-                      })
-                    )
-                  }
+                  onClick={addOptions}
                 >
                   <AddCircle />
                 </IconButton>
@@ -358,3 +343,23 @@ const AddQuestion = () => {
 };
 
 export default AddQuestion;
+
+const webStyles = {
+  addOptionBtn: {
+    display: "flex",
+    color: "white",
+    minWidth: "auto",
+    marginLeft: "auto",
+    backgroundColor: "#6c00ea",
+    textTransform: "capitalize",
+    "&:hover": {
+      backgroundColor: "#6c00ea",
+    },
+  },
+  pageWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "24px 0",
+  },
+};

@@ -13,10 +13,6 @@ const Input = lazy(() => import("../../components/Input/MuiInput"));
 const Layout = lazy(() => import("../../layout/layout"));
 const MuiButton = lazy(() => import("../../components/Button/MuiButton"));
 
-export const Errors = () => {
-  return <>"This is UI "</>;
-};
-
 const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,7 +32,7 @@ const SignIn = () => {
       if (_.isEqual(role, Role.Admin)) {
         navigate("/technology");
       } else {
-        navigate('/start-test')
+        navigate("/start-test");
       }
     }
   };
@@ -51,25 +47,8 @@ const SignIn = () => {
     <>
       <Suspense fallback="loading">
         <Layout pageTitle="Sign In" isPublic>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: "calc(100vh - 64px)",
-            }}
-          >
-            <Typography
-              sx={{
-                fontFamily: "Rubik,sans-serif",
-                fontWeight: 800,
-                fontSize: "32px",
-                marginBottom: "20px",
-              }}
-            >
-              Sign In
-            </Typography>
+          <Box sx={webStyles.pageWrapper}>
+            <Typography sx={webStyles.pageTitle}>Sign In</Typography>
             <Box sx={{ mb: 2 }}>
               <Input
                 onChange={handleOnChange}
@@ -109,3 +88,19 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
+const webStyles = {
+  pageWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "calc(100vh - 64px)",
+  },
+  pageTitle: {
+    fontFamily: "Rubik,sans-serif",
+    fontWeight: 800,
+    fontSize: "32px",
+    marginBottom: "20px",
+  },
+};

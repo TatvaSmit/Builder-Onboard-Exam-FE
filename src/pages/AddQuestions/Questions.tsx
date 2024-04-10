@@ -108,37 +108,18 @@ const Questions = () => {
           {questions.slice(page - 1, page).map((q, index: number) => {
             const details = (
               <Grid container rowSpacing={2} spacing={2}>
-                {_.map((_.get(q, "options", [])), (op, index: number) => {
+                {_.map(_.get(q, "options", []), (op, index: number) => {
                   return (
                     <Grid sx={{ display: "flex" }} item xs={12} md={6} lg={3}>
                       <Box
                         sx={{
-                          width: "100%",
-                          height: "auto",
                           border: `${
                             op.name == q.answer ? "0.2px solid #6c00ea" : "0.2px solid #e3e3e3"
                           } `,
-                          borderRadius: "8px",
-                          boxShadow: "0px 4px 16px 0px rgba(0, 0, 0, 0.12)",
+                          ...webStyles.option,
                         }}
                       >
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            padding: "0 10px",
-                            alignItems: "center",
-                            width: "40px",
-                            borderTopLeftRadius: "8px",
-                            borderBottomLeftRadius: "8px",
-                            justifyContent: "center",
-                            backgroundColor: "#6c00ea",
-                            height: "40px",
-                            color: "white",
-                            marginRight: "20px",
-                          }}
-                        >
-                          {Options[index]}
-                        </span>
+                        <span style={webStyles.optionLabelStyle}>{Options[index]}</span>
                         {op.name}
                       </Box>
                     </Grid>
@@ -148,13 +129,7 @@ const Questions = () => {
             );
 
             const summary = (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                }}
-              >
+              <Box sx={webStyles.accordianSummary}>
                 {index + 1}. {q.question}
                 <IconButton
                   sx={{ marginLeft: "auto" }}
@@ -186,3 +161,29 @@ const Questions = () => {
 };
 
 export default Questions;
+
+const webStyles = {
+  optionLabelStyle: {
+    display: "inline-flex",
+    alignItems: "center",
+    width: "40px",
+    borderTopLeftRadius: "8px",
+    borderBottomLeftRadius: "8px",
+    justifyContent: "center",
+    backgroundColor: "#6c00ea",
+    height: "40px",
+    color: "white",
+    marginRight: "20px",
+  },
+  option: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "24px 0",
+  },
+  accordianSummary: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+  },
+};

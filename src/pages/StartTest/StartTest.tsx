@@ -139,26 +139,8 @@ const StartTest = (props: Props) => {
   return (
     <>
       <Layout pageTitle="Exam" isDeveloper={true}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "calc(100vh - 64px)",
-          }}
-        >
-          <Typography
-            sx={{
-              fontWeight: 500,
-              fontSize: "32px",
-              marginBottom: "20px",
-              fontFamily: "Rubik, sans-serif",
-            }}
-          >
-            Test
-          </Typography>
+        <Box sx={webStyles.pageWrapper}>
+          <Typography sx={webStyles.pageTitle}>Test</Typography>
           <MuiSelect
             label="Technology"
             value={technology}
@@ -182,3 +164,20 @@ const StartTest = (props: Props) => {
   );
 };
 export default StartTest;
+
+const webStyles = {
+  pageWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "calc(100vh - 64px)",
+  },
+  pageTitle: {
+    fontWeight: 500,
+    fontSize: "32px",
+    marginBottom: "20px",
+    fontFamily: "Rubik, sans-serif",
+  },
+};
